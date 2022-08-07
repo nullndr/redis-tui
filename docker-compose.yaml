@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  redis:
+    image: redis:7.0.4-alpine
+    restart: unless-stopped
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_cache:/data
+
+volumes:
+  redis_cache:
