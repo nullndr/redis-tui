@@ -4,10 +4,10 @@ use tui::Terminal;
 
 mod utils;
 
-use utils::utils::{create_backend, create_primary_block, restore_terminal};
+use utils::terminal_utils::{create_primary_block, create_terminal_backend, restore_terminal};
 
 fn main() -> Result<(), io::Error> {
-  if let Ok(backend) = create_backend() {
+  if let Ok(backend) = create_terminal_backend() {
     let mut terminal = Terminal::new(backend)?;
 
     terminal.draw(|f| {
