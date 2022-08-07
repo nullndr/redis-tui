@@ -9,7 +9,7 @@ edition = "2021"
 
 [dependencies]
 redis = "0.21.5"
-crossterm = "0.23"
+crossterm = "0.24"
 tui = { version = "0.18.0", features = ["crossterm"], default-features = false }
 
 [[bin]]
