@@ -1,8 +1,16 @@
 [package]
 name = "redis-tui"
-version = "0.1.0"
+description = "a terminal interface for Redis"
+homepage = "https://github.com/nullndr/redis-tui"
+repository = "https://github.com/nullndr/redis-tui"
+keywords = ["redis", "tui"]
+version = "0.0.1"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+redis = "0.21.5"
+tui = { version = "0.18.0", features = ["crossterm"], default-features = false }
+
+[[bin]]
+name = "redis-tui"
+path = "src/main.rs"
