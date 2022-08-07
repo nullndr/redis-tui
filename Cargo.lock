@@ -226,6 +226,7 @@ dependencies = [
 name = "redis-tui"
 version = "0.0.1"
 dependencies = [
+ "crossterm",
  "redis",
  "tui",
 ]
