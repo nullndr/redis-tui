@@ -1,7 +1,7 @@
 use crossterm::{
   event::{DisableMouseCapture, EnableMouseCapture},
   execute,
-  terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+  terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::{stdout, Stdout};
 use tui::{
@@ -12,11 +12,14 @@ use tui::{
   Terminal,
 };
 
-pub fn create_terminal_backend() -> Result<CrosstermBackend<Stdout>, ()> {
-  if let Ok(_) = enable_raw_mode() {
+pub type TerminalBackendTp = CrosstermBackend<Stdout>;
+pub type TerminalBackend<W> = CrosstermBackend<W>;
+
+pub fn create_terminal_backend() -> Result<TerminalBackendTp, ()> {
+  if let Ok(_) = terminal::enable_raw_mode() {
     let mut stdout = stdout();
     if let Ok(_) = execute!(stdout, EnterAlternateScreen, EnableMouseCapture) {
-      Ok(CrosstermBackend::new(stdout))
+      Ok(TerminalBackend::new(stdout))
     } else {
       Err(())
     }
@@ -25,10 +28,10 @@ pub fn create_terminal_backend() -> Result<CrosstermBackend<Stdout>, ()> {
   }
 }
 
-pub fn restore_terminal(term: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<(), ()> {
-  if let Ok(_) = disable_raw_mode() {
+pub fn restore_terminal(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), ()> {
+  if let Ok(_) = terminal::disable_raw_mode() {
     if let Ok(_) = execute!(
-      term.backend_mut(),
+      terminal.backend_mut(),
       LeaveAlternateScreen,
       DisableMouseCapture
     ) {
