@@ -37,6 +37,9 @@ fn main() -> Result<(), Error> {
       }
     }
   } else {
-    Err(Error::new(ErrorKind::Other, "Failed to create backend"))
+    Err(Error::new(
+      ErrorKind::Other,
+      "Failed to create terminal backend",
+    ))
   }
 }

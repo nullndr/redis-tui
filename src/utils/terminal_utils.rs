@@ -3,7 +3,7 @@ use crossterm::{
   execute,
   terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use std::io::{stdout, Stdout};
+use std::io::{self, stdout};
 use tui::{
   backend::CrosstermBackend,
   style::{Color, Modifier, Style},
@@ -12,23 +12,29 @@ use tui::{
   Terminal,
 };
 
-pub type TerminalBackendTp = CrosstermBackend<Stdout>;
+pub type TerminalBackendTp = CrosstermBackend<io::Stdout>;
 pub type TerminalBackend<W> = CrosstermBackend<W>;
 
-pub fn create_terminal_backend() -> Result<TerminalBackendTp, ()> {
+pub fn create_terminal_backend() -> Result<TerminalBackendTp, io::Error> {
   if let Ok(_) = terminal::enable_raw_mode() {
     let mut stdout = stdout();
     if let Ok(_) = execute!(stdout, EnterAlternateScreen, EnableMouseCapture) {
       Ok(TerminalBackend::new(stdout))
     } else {
-      Err(())
+      Err(io::Error::new(
+        io::ErrorKind::Other,
+        "Failed to enter alternate screen",
+      ))
     }
   } else {
-    Err(())
+    Err(io::Error::new(
+      io::ErrorKind::Other,
+      "Failed to enable raw mode",
+    ))
   }
 }
 
-pub fn restore_terminal(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), ()> {
+pub fn restore_terminal(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), io::Error> {
   if let Ok(_) = terminal::disable_raw_mode() {
     if let Ok(_) = execute!(
       terminal.backend_mut(),
@@ -37,10 +43,16 @@ pub fn restore_terminal(terminal: &mut Terminal<TerminalBackendTp>) -> Result<()
     ) {
       Ok(())
     } else {
-      Err(())
+      Err(io::Error::new(
+        io::ErrorKind::Other,
+        "Failed to restore terminal",
+      ))
     }
   } else {
-    Err(())
+    Err(io::Error::new(
+      io::ErrorKind::Other,
+      "Failed to disable raw mode",
+    ))
   }
 }
 
