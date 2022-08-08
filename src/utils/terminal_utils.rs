@@ -22,7 +22,7 @@ pub fn create_terminal_backend() -> Result<TerminalBackendTp, io::Error> {
   Ok(TerminalBackend::new(stdout))
 }
 
-pub fn restore_terminal(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), io::Error> {
+pub fn close_application(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), io::Error> {
   terminal::disable_raw_mode()?;
   execute!(
     terminal.backend_mut(),
@@ -32,7 +32,7 @@ pub fn restore_terminal(terminal: &mut Terminal<TerminalBackendTp>) -> Result<()
   Ok(())
 }
 
-pub fn create_primary_block(title: &str) -> Block<'static> {
+pub fn create_block(title: &str) -> Block<'static> {
   Block::default()
     .title(Span::styled(
       String::from(title),

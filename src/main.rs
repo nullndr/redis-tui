@@ -16,18 +16,15 @@ fn main() -> Result<(), Error> {
       terminal.autoresize()?;
       terminal.draw(|f| {
         let size = f.size();
-        let block = terminal_utils::create_primary_block("Redis TUI");
+        let block = terminal_utils::create_block("Redis TUI");
         f.render_widget(block, size);
       })?;
       if event::poll(Duration::from_millis(500))? {
         match event::read()? {
           Event::Key(event) => {
             if event.code == KeyCode::Char('q') {
-              if let Ok(_) = terminal_utils::restore_terminal(&mut terminal) {
-                break Ok(());
-              } else {
-                panic!("Failed to restore terminal");
-              }
+              terminal_utils::close_application(&mut terminal)?;
+              return Ok(());
             } else {
               continue;
             }
