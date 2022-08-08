@@ -12,13 +12,13 @@ fn main() -> Result<(), Error> {
   if let Ok(backend) = terminal_utils::create_terminal_backend() {
     let mut terminal = Terminal::new(backend)?;
 
-    terminal.draw(|f| {
-      let size = f.size();
-      let block = terminal_utils::create_primary_block("Redis TUI");
-      f.render_widget(block, size);
-    })?;
-
     loop {
+      terminal.autoresize()?;
+      terminal.draw(|f| {
+        let size = f.size();
+        let block = terminal_utils::create_primary_block("Redis TUI");
+        f.render_widget(block, size);
+      })?;
       if event::poll(Duration::from_millis(500))? {
         match event::read()? {
           Event::Key(event) => {
