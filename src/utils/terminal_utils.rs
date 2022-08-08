@@ -16,44 +16,20 @@ pub type TerminalBackendTp = CrosstermBackend<io::Stdout>;
 pub type TerminalBackend<W> = CrosstermBackend<W>;
 
 pub fn create_terminal_backend() -> Result<TerminalBackendTp, io::Error> {
-  if let Ok(_) = terminal::enable_raw_mode() {
-    let mut stdout = stdout();
-    if let Ok(_) = execute!(stdout, EnterAlternateScreen, EnableMouseCapture) {
-      Ok(TerminalBackend::new(stdout))
-    } else {
-      Err(io::Error::new(
-        io::ErrorKind::Other,
-        "Failed to enter alternate screen",
-      ))
-    }
-  } else {
-    Err(io::Error::new(
-      io::ErrorKind::Other,
-      "Failed to enable raw mode",
-    ))
-  }
+  terminal::enable_raw_mode()?;
+  let mut stdout = stdout();
+  execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+  Ok(TerminalBackend::new(stdout))
 }
 
 pub fn restore_terminal(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), io::Error> {
-  if let Ok(_) = terminal::disable_raw_mode() {
-    if let Ok(_) = execute!(
-      terminal.backend_mut(),
-      LeaveAlternateScreen,
-      DisableMouseCapture
-    ) {
-      Ok(())
-    } else {
-      Err(io::Error::new(
-        io::ErrorKind::Other,
-        "Failed to restore terminal",
-      ))
-    }
-  } else {
-    Err(io::Error::new(
-      io::ErrorKind::Other,
-      "Failed to disable raw mode",
-    ))
-  }
+  terminal::disable_raw_mode()?;
+  execute!(
+    terminal.backend_mut(),
+    LeaveAlternateScreen,
+    DisableMouseCapture
+  )?;
+  Ok(())
 }
 
 pub fn create_primary_block(title: &str) -> Block<'static> {
