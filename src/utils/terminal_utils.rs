@@ -3,7 +3,7 @@ use crossterm::{
   execute,
   terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use std::io::{self, stdout};
+use std::io::{stdout, Error, Stdout};
 use tui::{
   backend::CrosstermBackend,
   style::{Color, Modifier, Style},
@@ -12,17 +12,21 @@ use tui::{
   Terminal,
 };
 
-pub type TerminalBackendTp = CrosstermBackend<io::Stdout>;
+pub type TerminalBackendTp = CrosstermBackend<Stdout>;
 pub type TerminalBackend<W> = CrosstermBackend<W>;
 
-pub fn create_terminal_backend() -> Result<TerminalBackendTp, io::Error> {
+fn create_terminal_backend() -> Result<TerminalBackendTp, Error> {
   terminal::enable_raw_mode()?;
   let mut stdout = stdout();
   execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
   Ok(TerminalBackend::new(stdout))
 }
 
-pub fn close_application(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), io::Error> {
+pub fn create_terminal() -> Result<Terminal<TerminalBackendTp>, Error> {
+  Terminal::new(create_terminal_backend()?)
+}
+
+pub fn close_application(terminal: &mut Terminal<TerminalBackendTp>) -> Result<(), Error> {
   terminal::disable_raw_mode()?;
   execute!(
     terminal.backend_mut(),
