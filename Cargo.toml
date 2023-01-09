@@ -8,7 +8,7 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
-redis = "0.22.1"
+redis = "0.22.2"
 crossterm = "0.25"
 tui = { version = "0.19.0", features = ["crossterm"], default-features = false }
 
